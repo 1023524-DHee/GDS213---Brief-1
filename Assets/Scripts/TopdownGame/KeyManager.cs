@@ -6,24 +6,19 @@ using UnityEngine;
 public class KeyManager : MonoBehaviour
 {
     public static KeyManager current;
+    public KeyboardButton currentPickedUpKey;
 
-    private bool isKeyPickedUp;
-    private KeyCode currentPickedUpKeyCode;
+    private bool _isKeyPickedUp;
 
     void Awake()
     {
         current = this;
     }
 
-	private void Update()
-	{
-		
-	}
-
-    public void KeyPickedUp(KeyCode key)
+    public void KeyPickedUp(KeyboardButton key)
     {
-        isKeyPickedUp = true;
-        currentPickedUpKeyCode = key;
+        _isKeyPickedUp = true;
+        currentPickedUpKey = key;
     }
 
     public event Action ONKeyPlacedDown;
@@ -33,36 +28,74 @@ public class KeyManager : MonoBehaviour
     }
 
     public event Action<KeyCode> ONUpKeyChanged;
-    public void UpKeyChanged(KeyCode key)
+    public void UpKeyChanged()
     {
-        ONUpKeyChanged?.Invoke(key);
+        ONUpKeyChanged?.Invoke(currentPickedUpKey.GetKeyCode());
     }
 
     public event Action<KeyCode> ONRightKeyChanged;
-    public void RightKeyChanged(KeyCode key)
+    public void RightKeyChanged()
     {
-        ONRightKeyChanged?.Invoke(key);
+        ONRightKeyChanged?.Invoke(currentPickedUpKey.GetKeyCode());
     }
 
     public event Action<KeyCode> ONDownKeyChanged;
-    public void DownKeyChanged(KeyCode key)
+    public void DownKeyChanged()
     {
-        ONDownKeyChanged?.Invoke(key);
+        ONDownKeyChanged?.Invoke(currentPickedUpKey.GetKeyCode());
     }
 
     public event Action<KeyCode> ONLeftKeyChanged;
-    public void LeftKeyChanged(KeyCode key)
+    public void LeftKeyChanged()
     {
-        ONLeftKeyChanged?.Invoke(key);
+        ONLeftKeyChanged?.Invoke(currentPickedUpKey.GetKeyCode());
     }
 
+    public event Action ONUpKeyExpired;
+    public void UpKeyExpired()
+    {
+        ONUpKeyExpired?.Invoke();
+    }
+    
+    public event Action ONRightKeyExpired;
+    public void RightKeyExpired()
+    {
+        ONRightKeyExpired?.Invoke();
+    }
+    
+    public event Action ONDownKeyExpired;
+    public void DownKeyExpired()
+    {
+        ONDownKeyExpired?.Invoke();
+    }
+    
+    public event Action ONLeftKeyExpired;
+    public void LeftKeyExpired()
+    {
+        ONLeftKeyExpired?.Invoke();
+    }
+
+    public event Action<ArrowKeyButton.KeyDirection> ONKeyPressed;
+
+    public void KeyPressed(ArrowKeyButton.KeyDirection keyDirection)
+    {
+        ONKeyPressed?.Invoke(keyDirection);
+    }
+    
+    #region Public Functions
     public bool IsKeyPickedUp()
     {
-        return isKeyPickedUp;
+        return _isKeyPickedUp;
+    }
+
+    public void SetKeyPickedUp(bool value)
+    {
+        _isKeyPickedUp = value;
     }
 
     public KeyCode GetPickedUpKeyCode()
     {
-        return currentPickedUpKeyCode;
+        return currentPickedUpKey.GetKeyCode();
     }
+    #endregion
 }
